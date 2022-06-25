@@ -36,12 +36,10 @@ rollbar.log('Hello world!')
 //     res.sendFile(path.join(__dirname, "/public/index.js"));
 // });
 
-app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
-});
 
 app.get('http://localhost:3000/api/robots', (req, res) => {
     try {
+        rollbar.info("Success in getting bots");
         res.status(200).send(botsArr)
     } catch (error) {
         console.log('ERROR GETTING BOTS', error)
@@ -51,11 +49,13 @@ app.get('http://localhost:3000/api/robots', (req, res) => {
 
 app.get('http://localhost:3000/api/robots/five', (req, res) => {
     try {
+        rollbar.info("5 bots displayed succcessfully");
         let shuffled = shuffleArray(bots)
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({ choices, compDuo })
     } catch (error) {
+        rollbar.error("Did not display 5 bots");
         console.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
     }
@@ -81,12 +81,15 @@ app.post('http://localhost:3000/api/duel', (req, res) => {
         // comparing the total health to determine a winner
         if (compHealthAfterAttack > playerHealthAfterAttack) {
             playerRecord.losses++
+            rollbar.info("loser-ville");
             res.status(200).send('You lost!')
         } else {
             playerRecord.losses++
+            rollbar.info("We have a winner!");
             res.status(200).send('You won!')
         }
     } catch (error) {
+        rollbar.error("Could not determine winner");
         console.log('ERROR DUELING', error)
         res.sendStatus(400)
     }
@@ -94,8 +97,10 @@ app.post('http://localhost:3000/api/duel', (req, res) => {
 
 app.get('http://localhost:3000/api/player', (req, res) => {
     try {
+        rollerbar.info("Player stats successful");
         res.status(200).send(playerRecord)
     } catch (error) {
+        rollbar.error("Did not succeed in getting player stats");
         console.log('ERROR GETTING PLAYER STATS', error)
         res.sendStatus(400)
     }
